@@ -87,9 +87,9 @@ jobs:
       - name: Rename & Prepare Artifacts
         run: |
           VERSION=$(node -p "require('./package.json').version")
-          if [ -f paperknife-global-unsigned-signed.apk ]; then
-            cp paperknife-global-unsigned-signed.apk "softbee-pdf-v${VERSION}.apk"
-            cp paperknife-fdroid-unsigned-signed.apk "softbee-pdf-lite-v${VERSION}.apk"
+          if [ -f softbee-global-unsigned-signed.apk ]; then
+            cp softbee-global-unsigned-signed.apk "softbee-pdf-v${VERSION}.apk"
+            cp softbee-fdroid-unsigned-signed.apk "softbee-pdf-lite-v${VERSION}.apk"
           else
             cp softbee-global-unsigned.apk "softbee-pdf-v${VERSION}.apk"
             cp softbee-fdroid-unsigned.apk "softbee-pdf-lite-v${VERSION}.apk"
