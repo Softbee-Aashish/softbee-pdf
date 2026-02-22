@@ -54,7 +54,7 @@ jobs:
           cd android
           chmod +x gradlew
           ./gradlew assembleRelease
-          mv app/build/outputs/apk/release/app-release-unsigned.apk ../paperknife-global-unsigned.apk
+          mv app/build/outputs/apk/release/app-release-unsigned.apk ../softbee-global-unsigned.apk
 
       - name: Build F-Droid Lite APK (No OCR)
         run: |
@@ -68,10 +68,11 @@ jobs:
           
           cd android
           ./gradlew assembleRelease
-          mv app/build/outputs/apk/release/app-release-unsigned.apk ../paperknife-fdroid-unsigned.apk
+          mv app/build/outputs/apk/release/app-release-unsigned.apk ../softbee-fdroid-unsigned.apk
 
       - name: Sign Both APKs
         id: sign_app
+        if: env.HAS_SECRETS == 'true'
         uses: ilharp/sign-android-release@v2
         with:
           releaseDir: .
@@ -80,12 +81,19 @@ jobs:
           keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
           buildToolsVersion: "34.0.0"
+        env:
+          HAS_SECRETS: ${{ secrets.ANDROID_SIGNING_KEY != '' }}
 
       - name: Rename & Prepare Artifacts
         run: |
           VERSION=$(node -p "require('./package.json').version")
-          cp paperknife-global-unsigned-signed.apk "paperknife-v${VERSION}.apk"
-          cp paperknife-fdroid-unsigned-signed.apk "paperknife-lite-v${VERSION}.apk"
+          if [ -f paperknife-global-unsigned-signed.apk ]; then
+            cp paperknife-global-unsigned-signed.apk "softbee-pdf-v${VERSION}.apk"
+            cp paperknife-fdroid-unsigned-signed.apk "softbee-pdf-lite-v${VERSION}.apk"
+          else
+            cp softbee-global-unsigned.apk "softbee-pdf-v${VERSION}.apk"
+            cp softbee-fdroid-unsigned.apk "softbee-pdf-lite-v${VERSION}.apk"
+          fi
           echo "APP_VERSION=${VERSION}" >> $GITHUB_ENV
 
       - name: Upload Artifacts
@@ -93,6 +101,6 @@ jobs:
         with:
           name: SoftBee-PDF-v${{ env.APP_VERSION }}
           path: |
-            paperknife-v${{ env.APP_VERSION }}.apk
-            paperknife-lite-v${{ env.APP_VERSION }}.apk
+            softbee-pdf-v${{ env.APP_VERSION }}.apk
+            softbee-pdf-lite-v${{ env.APP_VERSION }}.apk
           if-no-files-found: error
