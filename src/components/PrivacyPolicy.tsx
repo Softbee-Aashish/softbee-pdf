@@ -79,6 +79,51 @@ const PrivacyWeb = () => {
           </div>
         </div>
 
+        {/* Third-Party Services & AdSense Disclosure */}
+        <div className="bg-white dark:bg-zinc-900 rounded-[2.5rem] p-8 md:p-12 border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-full text-[10px] font-black uppercase tracking-widest border border-amber-200/60 dark:border-amber-900/30">
+            Compliance & Transparency
+          </div>
+          <h2 className="text-2xl md:text-3xl font-black dark:text-white tracking-tight">
+            Third-Party Services, Cookies & Advertising
+          </h2>
+          <p className="text-sm md:text-base text-gray-600 dark:text-zinc-300 leading-relaxed font-medium">
+            While your PDF files and document contents are strictly processed <strong>locally in your browser RAM</strong> and never leave your machine, our website utilizes standard third-party web services to remain sustainable and free for everyone:
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+            <div className="p-6 rounded-2xl bg-gray-50 dark:bg-zinc-800/60 border border-gray-100 dark:border-zinc-700/50 space-y-3">
+              <h3 className="font-bold text-base dark:text-white">Google AdSense</h3>
+              <p className="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">
+                Third-party vendors, including Google, use cookies to serve ads based on your previous visits to this or other websites. Google's use of advertising cookies enables it and its partners to serve relevant ads.
+              </p>
+              <p className="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">
+                You may opt out of personalized advertising at any time by visiting{' '}
+                <a href="https://myadcenter.google.com/" target="_blank" rel="noopener noreferrer" className="text-rose-500 underline font-semibold">
+                  Google My Ad Center
+                </a>{' '}
+                or{' '}
+                <a href="https://optout.aboutads.info/" target="_blank" rel="noopener noreferrer" className="text-rose-500 underline font-semibold">
+                  aboutads.info
+                </a>.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-gray-50 dark:bg-zinc-800/60 border border-gray-100 dark:border-zinc-700/50 space-y-3">
+              <h3 className="font-bold text-base dark:text-white">Google Analytics (gtag.js)</h3>
+              <p className="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">
+                We use Google Analytics to measure aggregated website traffic and system performance. This service collects non-identifiable usage statistics (such as page views and browser types).
+              </p>
+              <p className="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">
+                You can prevent Google Analytics from collecting telemetry across all sites by installing the{' '}
+                <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" className="text-rose-500 underline font-semibold">
+                  Google Analytics Opt-out Browser Add-on
+                </a>.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Integrity Footer */}
         <div className="p-10 bg-emerald-500 text-white rounded-[3rem] flex flex-col md:flex-row items-center gap-10 relative overflow-hidden shadow-2xl shadow-emerald-500/20">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.2),transparent_60%)] pointer-events-none" />
@@ -91,7 +136,7 @@ const PrivacyWeb = () => {
               Recent activity logs are stored exclusively in your browser's <span className="font-black">IndexedDB</span>. This data never touches a network. You remain the sole custodian of your history.
             </p>
             <div className="flex flex-wrap justify-center md:justify-start gap-4">
-              <a href="https://github.com/softbee/softbee-pdf" target="_blank" className="px-8 py-3 bg-white text-emerald-600 rounded-xl font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-transform flex items-center gap-2 shadow-lg">
+              <a href="https://github.com/Softbee-Aashish/softbee-pdf" target="_blank" rel="noopener noreferrer" className="px-8 py-3 bg-white text-emerald-600 rounded-xl font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-transform flex items-center gap-2 shadow-lg">
                 <Shield size={14} /> Audit Engine
               </a>
             </div>

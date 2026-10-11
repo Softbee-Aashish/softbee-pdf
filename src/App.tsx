@@ -13,7 +13,8 @@ import { useState, useEffect } from 'react'
 import {
   Layers, Scissors, Zap, Smartphone as SmartphoneIcon, Monitor as MonitorIcon, Lock, Unlock,
   RotateCw, Type, Hash, Tags, FileText, ArrowUpDown, PenTool,
-  Wrench, ImagePlus, FileImage, Palette, X, ChevronDown
+  Wrench, ImagePlus, FileImage, Palette, X, ChevronDown, BookOpen,
+  FileEdit, Sheet, FileUp
 } from 'lucide-react'
 import { HashRouter, Routes, Route, useNavigate } from 'react-router-dom'
 import { Toaster, toast } from 'sonner'
@@ -55,25 +56,49 @@ import SignatureTool from './components/tools/SignatureTool'
 import RepairTool from './components/tools/RepairTool'
 import ExtractImagesTool from './components/tools/ExtractImagesTool'
 import GrayscaleTool from './components/tools/GrayscaleTool'
+import FlattenTool from './components/tools/FlattenTool'
+import TxtToPdfTool from './components/tools/TxtToPdfTool'
+import EditPdfTool from './components/tools/EditPdfTool'
+import PdfReaderTool from './components/tools/PdfReaderTool'
+import PdfToWordTool from './components/tools/PdfToWordTool'
+import WordToPdfTool from './components/tools/WordToPdfTool'
+import PdfToExcelTool from './components/tools/PdfToExcelTool'
+import ExcelToPdfTool from './components/tools/ExcelToPdfTool'
+import Contact from './components/Contact'
+import TermsOfService from './components/TermsOfService'
 
 const tools: Tool[] = [
   { title: 'Merge PDF', desc: 'Combine multiple PDF files into one document.', icon: Layers, implemented: true, path: '/merge', category: 'Edit', color: 'text-rose-500', bg: 'bg-rose-50 dark:bg-rose-900/20' },
-  { title: 'Split PDF', desc: 'Visually extract specific pages or ranges.', icon: Scissors, implemented: true, path: '/split', category: 'Edit', color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-900/20' },
+  { title: 'Edit PDF', desc: 'Add text, shapes, highlights, and annotations directly on PDFs.', icon: FileEdit, implemented: true, path: '/edit-pdf', category: 'Edit', color: 'text-cyan-600', bg: 'bg-cyan-50 dark:bg-cyan-900/20' },
   { title: 'Compress PDF', desc: 'Optimize your file size for easier sharing.', icon: Zap, implemented: true, path: '/compress', category: 'Optimize', color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-900/20' },
+  { title: 'PDF to Word', desc: 'Convert PDF files into editable Microsoft Word documents (.docx).', icon: FileText, implemented: true, path: '/pdf-to-word', category: 'Convert', color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20' },
+  { title: 'Word to PDF', desc: 'Transform Microsoft Word (.docx) files into clean PDFs.', icon: FileUp, implemented: true, path: '/word-to-pdf', category: 'Convert', color: 'text-indigo-600', bg: 'bg-indigo-50 dark:bg-indigo-900/20' },
+  { title: 'PDF to Excel', desc: 'Extract table data from PDF into an editable spreadsheet (.csv).', icon: Sheet, implemented: true, path: '/pdf-to-excel', category: 'Convert', color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
+  { title: 'Excel to PDF', desc: 'Convert spreadsheet data into clean, formatted PDF tables.', icon: Sheet, implemented: true, path: '/excel-to-pdf', category: 'Convert', color: 'text-teal-600', bg: 'bg-teal-50 dark:bg-teal-900/20' },
+  { title: 'PDF Reader', desc: 'Read, view, rotate, zoom, and print PDF documents online.', icon: BookOpen, implemented: true, path: '/pdf-reader', category: 'Edit', color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
+  { title: 'Split PDF', desc: 'Visually extract specific pages or page ranges.', icon: Scissors, implemented: true, path: '/split', category: 'Edit', color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-900/20' },
   { title: 'Protect PDF', desc: 'Secure your documents with strong encryption.', icon: Lock, implemented: true, path: '/protect', category: 'Secure', color: 'text-indigo-500', bg: 'bg-indigo-50 dark:bg-indigo-900/20' },
   { title: 'Unlock PDF', desc: 'Remove passwords from your protected files.', icon: Unlock, implemented: true, path: '/unlock', category: 'Secure', color: 'text-violet-500', bg: 'bg-violet-50 dark:bg-violet-900/20' },
   { title: 'Rotate PDF', desc: 'Fix page orientation permanently.', icon: RotateCw, implemented: true, path: '/rotate-pdf', category: 'Edit', color: 'text-orange-500', bg: 'bg-orange-50 dark:bg-orange-900/20' },
   { title: 'Rearrange PDF', desc: 'Drag and drop pages to reorder them.', icon: ArrowUpDown, implemented: true, path: '/rearrange-pdf', category: 'Edit', color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
-  { title: 'Page Numbers', desc: 'Add numbering to your documents automatically.', icon: Hash, implemented: true, path: '/page-numbers', category: 'Edit', color: 'text-sky-500', bg: 'bg-sky-50 dark:bg-sky-900/20' },
+  { title: 'Delete Pages', desc: 'Remove unwanted pages cleanly from your PDF.', icon: Scissors, implemented: true, path: '/delete-pages', category: 'Edit', color: 'text-red-500', bg: 'bg-red-50 dark:bg-red-900/20' },
+  { title: 'Extract Pages', desc: 'Save selected pages as a brand new document.', icon: Scissors, implemented: true, path: '/extract-pages', category: 'Edit', color: 'text-purple-500', bg: 'bg-purple-50 dark:bg-purple-900/20' },
+  { title: 'Page Numbers', desc: 'Add page numbering to documents automatically.', icon: Hash, implemented: true, path: '/page-numbers', category: 'Edit', color: 'text-sky-500', bg: 'bg-sky-50 dark:bg-sky-900/20' },
   { title: 'Watermark', desc: 'Overlay custom text for branding or security.', icon: Type, implemented: true, path: '/watermark', category: 'Edit', color: 'text-purple-500', bg: 'bg-purple-50 dark:bg-purple-900/20' },
   { title: 'Metadata', desc: 'Edit document properties for better privacy.', icon: Tags, implemented: true, path: '/metadata', category: 'Secure', color: 'text-cyan-500', bg: 'bg-cyan-50 dark:bg-cyan-900/20' },
   { title: 'Signature', desc: 'Add your electronic signature to any document.', icon: PenTool, implemented: true, path: '/signature', category: 'Edit', color: 'text-pink-500', bg: 'bg-pink-50 dark:bg-pink-900/20' },
+  { title: 'Flatten PDF', desc: 'Merge form fields and annotations into static pages.', icon: Layers, implemented: true, path: '/flatten', category: 'Optimize', color: 'text-rose-600', bg: 'bg-rose-50 dark:bg-rose-900/20' },
   { title: 'Grayscale', desc: 'Convert all document pages to black and white.', icon: Palette, implemented: true, path: '/grayscale', category: 'Optimize', color: 'text-zinc-500', bg: 'bg-zinc-50 dark:bg-zinc-900/20' },
   { title: 'PDF to Image', desc: 'Convert document pages into high-quality images.', icon: FileImage, implemented: true, path: '/pdf-to-image', category: 'Convert', color: 'text-lime-500', bg: 'bg-lime-50 dark:bg-lime-900/20' },
-  { title: 'Image to PDF', desc: 'Convert JPG, PNG, and WebP into a professional PDF.', icon: ImagePlus, implemented: true, path: '/image-to-pdf', category: 'Convert', color: 'text-teal-500', bg: 'bg-teal-50 dark:bg-teal-900/20' },
+  { title: 'PDF to JPG', desc: 'Extract pages directly as JPG image files.', icon: FileImage, implemented: true, path: '/pdf-to-jpg', category: 'Convert', color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-900/20' },
+  { title: 'PDF to PNG', desc: 'Extract pages with high-fidelity PNG rasterization.', icon: FileImage, implemented: true, path: '/pdf-to-png', category: 'Convert', color: 'text-yellow-500', bg: 'bg-yellow-50 dark:bg-yellow-900/20' },
+  { title: 'Image to PDF', desc: 'Convert JPG, PNG, and WebP into a PDF document.', icon: ImagePlus, implemented: true, path: '/image-to-pdf', category: 'Convert', color: 'text-teal-500', bg: 'bg-teal-50 dark:bg-teal-900/20' },
+  { title: 'JPG to PDF', desc: 'Transform JPG and JPEG photos into a clean PDF.', icon: ImagePlus, implemented: true, path: '/jpg-to-pdf', category: 'Convert', color: 'text-orange-500', bg: 'bg-orange-50 dark:bg-orange-900/20' },
+  { title: 'PNG to PDF', desc: 'Convert PNG graphics and screenshots to a PDF.', icon: ImagePlus, implemented: true, path: '/png-to-pdf', category: 'Convert', color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
+  { title: 'TXT to PDF', desc: 'Convert plain text notes and .txt files to PDF.', icon: FileText, implemented: true, path: '/txt-to-pdf', category: 'Convert', color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-900/20' },
   { title: 'Extract Images', desc: 'Pull out all original images embedded in a PDF.', icon: FileImage, implemented: true, path: '/extract-images', category: 'Convert', color: 'text-yellow-500', bg: 'bg-yellow-50 dark:bg-yellow-900/20' },
   { title: 'PDF to Text', desc: 'Extract plain text from your PDF documents.', icon: FileText, implemented: true, path: '/pdf-to-text', category: 'Convert', color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-900/20' },
-  { title: 'Repair PDF', desc: 'Attempt to fix corrupted or unreadable documents.', icon: Wrench, implemented: true, path: '/repair', category: 'Optimize', color: 'text-red-500', bg: 'bg-red-50 dark:bg-red-900/20' },
+  { title: 'Repair PDF', desc: 'Attempt to recover corrupted or unreadable files.', icon: Wrench, implemented: true, path: '/repair', category: 'Optimize', color: 'text-red-500', bg: 'bg-red-50 dark:bg-red-900/20' },
 ]
 
 export const IS_OCR_DISABLED = import.meta.env.VITE_DISABLE_OCR === 'true'
@@ -374,8 +399,28 @@ function App() {
                 <Route path="/repair" element={<RepairTool />} />
                 <Route path="/extract-images" element={<ExtractImagesTool />} />
                 <Route path="/grayscale" element={<GrayscaleTool />} />
+                <Route path="/flatten" element={<FlattenTool />} />
+                <Route path="/txt-to-pdf" element={<TxtToPdfTool />} />
+                <Route path="/pdf-to-jpg" element={<PdfToImageTool />} />
+                <Route path="/pdf-to-png" element={<PdfToImageTool />} />
+                <Route path="/jpg-to-pdf" element={<ImageToPdfTool />} />
+                <Route path="/png-to-pdf" element={<ImageToPdfTool />} />
+                <Route path="/delete-pages" element={<SplitTool />} />
+                <Route path="/extract-pages" element={<SplitTool />} />
+                <Route path="/edit" element={<EditPdfTool />} />
+                <Route path="/edit-pdf" element={<EditPdfTool />} />
+                <Route path="/pdf-reader" element={<PdfReaderTool />} />
+                <Route path="/reader" element={<PdfReaderTool />} />
+                <Route path="/pdf-to-word" element={<PdfToWordTool />} />
+                <Route path="/word-to-pdf" element={<WordToPdfTool />} />
+                <Route path="/pdf-to-excel" element={<PdfToExcelTool />} />
+                <Route path="/excel-to-pdf" element={<ExcelToPdfTool />} />
+                <Route path="/esign" element={<SignatureTool />} />
+                <Route path="/sign" element={<SignatureTool />} />
                 <Route path="/about" element={<About viewMode={viewMode} />} />
                 <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/terms" element={<TermsOfService />} />
                 <Route path="/settings" element={<SettingsView theme={theme} setTheme={setTheme} />} />
                 <Route path="/thanks" element={<Thanks />} />
               </Routes>

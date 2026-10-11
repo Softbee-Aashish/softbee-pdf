@@ -13,7 +13,6 @@ import {
   Trash2 as Trash2Icon,
   CheckCircle2 as CheckCircleIcon,
   Home as HomeIcon,
-  Info as InfoIcon,
   ArrowLeft as ArrowLeftIcon,
   LayoutGrid as LayoutGridIcon,
   Settings as SettingsIcon,
@@ -22,11 +21,10 @@ import {
   Download
 } from 'lucide-react'
 import { Capacitor } from '@capacitor/core'
-import { Theme, Tool, ToolCategory, ViewMode } from '../types'
+import { Theme, Tool, ViewMode } from '../types'
 import { SoftBeeLogo } from './Logo'
 import { ActivityEntry, getRecentActivity, clearActivity } from '../utils/recentActivity'
 import { hapticImpact } from '../utils/haptics'
-
 
 interface LayoutProps {
   children: React.ReactNode
@@ -35,13 +33,6 @@ interface LayoutProps {
   tools: Tool[]
   onFileDrop?: (files: FileList) => void
   viewMode: ViewMode
-}
-
-const categoryColors: Record<ToolCategory, { bg: string, text: string, hover: string, iconBg: string }> = {
-  Edit: { bg: 'bg-rose-50 dark:bg-rose-900/20', text: 'text-rose-500', hover: 'hover:bg-rose-50 dark:hover:bg-rose-900/10', iconBg: 'bg-rose-100 dark:bg-rose-900/30' },
-  Secure: { bg: 'bg-indigo-50 dark:bg-indigo-900/20', text: 'text-indigo-500', hover: 'hover:bg-indigo-50 dark:hover:bg-indigo-900/10', iconBg: 'bg-indigo-100 dark:bg-indigo-900/30' },
-  Convert: { bg: 'bg-emerald-50 dark:bg-emerald-900/20', text: 'text-emerald-500', hover: 'hover:bg-emerald-50 dark:hover:bg-emerald-900/10', iconBg: 'bg-emerald-100 dark:bg-emerald-900/30' },
-  Optimize: { bg: 'bg-amber-50 dark:bg-amber-900/20', text: 'text-amber-500', hover: 'hover:bg-amber-50 dark:hover:bg-amber-900/10', iconBg: 'bg-amber-100 dark:bg-amber-900/30' }
 }
 
 export default function Layout({ children, theme, toggleTheme, tools, onFileDrop, viewMode }: LayoutProps) {
@@ -133,66 +124,206 @@ export default function Layout({ children, theme, toggleTheme, tools, onFileDrop
 
       {/* Web Header */}
       {!showMobileNav && (
-        <header className="flex items-center justify-between px-4 md:px-8 h-16 md:h-20 border-b border-gray-100 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md sticky top-0 z-[100]">
-          <div className="flex items-center gap-2 md:gap-4 flex-1 min-w-0">
+        <header className="flex items-center justify-between px-4 lg:px-8 h-16 md:h-20 border-b border-gray-100 dark:border-zinc-800 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md sticky top-0 z-[100]">
+          <div className="flex items-center gap-3 lg:gap-6 flex-1 min-w-0">
             {!isHome && (
-              <button onClick={() => navigate('/')} className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-900 rounded-xl transition-colors text-gray-500 hover:text-rose-500 shrink-0"><ArrowLeftIcon size={20} /></button>
-            )}
-            <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity shrink-0">
-              <SoftBeeLogo size={Capacitor.isNativePlatform() ? 24 : 28} iconColor="#F59E0B" />
-              <span className="font-black tracking-tighter text-lg md:text-xl dark:text-white hidden xs:block">SoftBee PDF</span>
-            </Link>
-            <div className="h-6 w-[1px] bg-gray-200 dark:bg-zinc-800 mx-1 md:mx-2 shrink-0" />
-            <div className="relative min-w-0" ref={dropdownRef}>
-              <button onClick={() => setIsDropdownOpen(!isDropdownOpen)} className={`flex items-center gap-2 px-2 md:px-3 py-1.5 rounded-xl transition-all font-black text-[10px] md:text-sm uppercase tracking-widest min-w-0 ${isDropdownOpen ? 'bg-rose-500 text-white' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-zinc-900'}`}>
-                <span className="truncate">{isHome ? 'All Tools' : activeTool?.title || 'Tool'}</span>
-                <ChevronDownIcon size={14} className={`transition-transform duration-300 shrink-0 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+              <button onClick={() => navigate('/')} className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-900 rounded-xl transition-colors text-gray-500 hover:text-rose-500 shrink-0">
+                <ArrowLeftIcon size={20} />
               </button>
+            )}
+            <Link to="/" className="flex items-center gap-2 hover:opacity-85 transition-opacity shrink-0">
+              <SoftBeeLogo size={26} iconColor="#F59E0B" />
+              <span className="font-extrabold tracking-tight text-lg lg:text-xl dark:text-white hidden sm:block">SoftBee PDF</span>
+            </Link>
+
+            {/* Tools Mega-Menu Trigger */}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl transition-all font-bold text-xs uppercase tracking-wider ${
+                  isDropdownOpen
+                    ? 'bg-rose-500 text-white shadow-md shadow-rose-500/20'
+                    : 'text-gray-700 dark:text-zinc-200 hover:bg-gray-100 dark:hover:bg-zinc-900'
+                }`}
+              >
+                <LayoutGridIcon size={16} />
+                <span>Tools</span>
+                <ChevronDownIcon size={14} className={`transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* Mega-Menu Dropdown (Smallpdf Style) */}
               {isDropdownOpen && (
-                <div className="absolute top-full left-0 mt-3 w-72 md:w-80 bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-[2rem] shadow-2xl py-4 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300 max-h-[80vh] overflow-y-auto scrollbar-hide">
-                  {Object.entries(tools.filter(t => t.implemented).reduce((acc, tool) => { if (!acc[tool.category]) acc[tool.category] = []; acc[tool.category].push(tool); return acc }, {} as Record<string, Tool[]>)).map(([category, categoryTools]) => {
-                    const colors = categoryColors[category as ToolCategory]
-                    return (
-                      <div key={category} className="mb-4">
-                        <div className="px-6 py-2"><span className={`text-[10px] font-black uppercase tracking-[0.2em] ${colors.text} opacity-60`}>{category}</span></div>
-                        <div className="grid grid-cols-1 gap-1 px-2">
-                          {categoryTools.map((tool, i) => {
-                            const Icon = tool.icon; const isActive = activeTool?.title === tool.title && !isHome
-                            return (
-                              <button key={i} onClick={() => { navigate(tool.path || '/'); setIsDropdownOpen(false); }} className={`flex items-center gap-4 p-3 rounded-2xl transition-all text-left group ${isActive ? `${colors.bg} ${colors.text}` : `hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-500 dark:text-gray-400`}`}>
-                                <div className={`p-2 rounded-lg transition-colors ${isActive ? 'bg-white dark:bg-zinc-800' : `${colors.iconBg} ${colors.text} opacity-70 group-hover:opacity-100`}`}><Icon size={18} /></div>
-                                <div className="flex-1 min-w-0"><p className="text-xs font-black uppercase tracking-tight">{tool.title}</p><p className="text-[10px] opacity-60 truncate">{tool.desc}</p></div>
-                              </button>
-                            )
-                          })}
-                        </div>
+                <div className="fixed sm:absolute top-16 sm:top-full left-4 right-4 sm:left-0 sm:right-auto mt-2 sm:w-[780px] lg:w-[860px] bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-3xl shadow-2xl p-6 z-[120] animate-in fade-in slide-in-from-top-2 duration-200 max-h-[85vh] overflow-y-auto">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    
+                    {/* Column 1: Compress & Optimize */}
+                    <div className="space-y-3">
+                      <div className="px-2 py-1 text-[11px] font-extrabold uppercase tracking-wider text-amber-500 border-b border-amber-500/10 pb-2">
+                        Compress & Optimize
                       </div>
-                    )
-                  })}
+                      <div className="space-y-1">
+                        {[
+                          { title: 'Compress PDF', path: '/compress', badge: 'bg-amber-500 text-white', desc: 'Reduce file size' },
+                          { title: 'Grayscale', path: '/grayscale', badge: 'bg-zinc-500 text-white', desc: 'Black & white PDF' },
+                          { title: 'Flatten PDF', path: '/flatten', badge: 'bg-rose-500 text-white', desc: 'Lock form fields' },
+                          { title: 'Repair PDF', path: '/repair', badge: 'bg-red-500 text-white', desc: 'Recover damaged file' },
+                        ].map((item) => (
+                          <button
+                            key={item.path}
+                            onClick={() => { navigate(item.path); setIsDropdownOpen(false); }}
+                            className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 dark:hover:bg-zinc-800 text-left transition-colors group"
+                          >
+                            <span className={`w-7 h-7 rounded-lg ${item.badge} flex items-center justify-center text-[10px] font-bold shrink-0 shadow-sm group-hover:scale-105 transition-transform`}>
+                              PDF
+                            </span>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-bold text-gray-900 dark:text-white truncate">{item.title}</p>
+                              <p className="text-[10px] text-gray-400 truncate">{item.desc}</p>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Column 2: Organize & Edit */}
+                    <div className="space-y-3">
+                      <div className="px-2 py-1 text-[11px] font-extrabold uppercase tracking-wider text-rose-500 border-b border-rose-500/10 pb-2">
+                        Organize & Edit
+                      </div>
+                      <div className="space-y-1">
+                        {[
+                          { title: 'Edit PDF', path: '/edit-pdf', badge: 'bg-[#00A896] text-white', desc: 'Add text & annotate' },
+                          { title: 'PDF Reader', path: '/pdf-reader', badge: 'bg-[#059669] text-white', desc: 'View & read PDF' },
+                          { title: 'Merge PDF', path: '/merge', badge: 'bg-rose-500 text-white', desc: 'Combine multiple files' },
+                          { title: 'Split PDF', path: '/split', badge: 'bg-blue-500 text-white', desc: 'Extract pages' },
+                          { title: 'Rotate PDF', path: '/rotate-pdf', badge: 'bg-orange-500 text-white', desc: 'Fix orientation' },
+                          { title: 'Rearrange PDF', path: '/rearrange-pdf', badge: 'bg-emerald-500 text-white', desc: 'Reorder pages' },
+                          { title: 'Delete Pages', path: '/delete-pages', badge: 'bg-red-500 text-white', desc: 'Remove unwanted pages' },
+                          { title: 'Extract Pages', path: '/extract-pages', badge: 'bg-purple-500 text-white', desc: 'Save selected pages' },
+                          { title: 'Page Numbers', path: '/page-numbers', badge: 'bg-sky-500 text-white', desc: 'Add page numbers' },
+                          { title: 'Watermark', path: '/watermark', badge: 'bg-purple-500 text-white', desc: 'Add custom stamp' },
+                        ].map((item) => (
+                          <button
+                            key={item.title}
+                            onClick={() => { navigate(item.path); setIsDropdownOpen(false); }}
+                            className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 dark:hover:bg-zinc-800 text-left transition-colors group cursor-pointer"
+                          >
+                            <span className={`w-7 h-7 rounded-lg ${item.badge} flex items-center justify-center text-[10px] font-bold shrink-0 shadow-sm group-hover:scale-105 transition-transform`}>
+                              PDF
+                            </span>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-bold text-gray-900 dark:text-white truncate">{item.title}</p>
+                              <p className="text-[10px] text-gray-400 truncate">{item.desc}</p>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Column 3: Convert & Extract */}
+                    <div className="space-y-3">
+                      <div className="px-2 py-1 text-[11px] font-extrabold uppercase tracking-wider text-emerald-500 border-b border-emerald-500/10 pb-2">
+                        Convert & Extract
+                      </div>
+                      <div className="space-y-1">
+                        {[
+                          { title: 'PDF to Word', path: '/pdf-to-word', badge: 'bg-[#1D4ED8] text-white', desc: 'Convert to DOCX' },
+                          { title: 'Word to PDF', path: '/word-to-pdf', badge: 'bg-[#2563EB] text-white', desc: 'DOCX to PDF' },
+                          { title: 'PDF to Excel', path: '/pdf-to-excel', badge: 'bg-[#059669] text-white', desc: 'Extract to CSV' },
+                          { title: 'Excel to PDF', path: '/excel-to-pdf', badge: 'bg-[#10B981] text-white', desc: 'Spreadsheet to PDF' },
+                          { title: 'PDF to Image', path: '/pdf-to-image', badge: 'bg-emerald-500 text-white', desc: 'Export JPG or PNG' },
+                          { title: 'Image to PDF', path: '/image-to-pdf', badge: 'bg-teal-500 text-white', desc: 'JPG / PNG to PDF' },
+                          { title: 'PDF to JPG', path: '/pdf-to-jpg', badge: 'bg-amber-500 text-white', desc: 'Direct JPG export' },
+                          { title: 'PDF to PNG', path: '/pdf-to-png', badge: 'bg-yellow-500 text-white', desc: 'Direct PNG export' },
+                          { title: 'TXT to PDF', path: '/txt-to-pdf', badge: 'bg-blue-500 text-white', desc: 'Plain text to PDF' },
+                          { title: 'Extract Images', path: '/extract-images', badge: 'bg-yellow-500 text-white', desc: 'Rip embedded images' },
+                          { title: 'PDF to Text', path: '/pdf-to-text', badge: 'bg-blue-600 text-white', desc: 'OCR & Text extract' },
+                        ].map((item) => (
+                          <button
+                            key={item.title}
+                            onClick={() => { navigate(item.path); setIsDropdownOpen(false); }}
+                            className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 dark:hover:bg-zinc-800 text-left transition-colors group cursor-pointer"
+                          >
+                            <span className={`w-7 h-7 rounded-lg ${item.badge} flex items-center justify-center text-[10px] font-bold shrink-0 shadow-sm group-hover:scale-105 transition-transform`}>
+                              PDF
+                            </span>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-bold text-gray-900 dark:text-white truncate">{item.title}</p>
+                              <p className="text-[10px] text-gray-400 truncate">{item.desc}</p>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Column 4: Security & Sign */}
+                    <div className="space-y-3">
+                      <div className="px-2 py-1 text-[11px] font-extrabold uppercase tracking-wider text-indigo-500 border-b border-indigo-500/10 pb-2">
+                        Security & Sign
+                      </div>
+                      <div className="space-y-1">
+                        {[
+                          { title: 'Protect PDF', path: '/protect', badge: 'bg-indigo-500 text-white', desc: 'Encrypt with password' },
+                          { title: 'Unlock PDF', path: '/unlock', badge: 'bg-violet-500 text-white', desc: 'Remove password' },
+                          { title: 'Signature', path: '/signature', badge: 'bg-pink-500 text-white', desc: 'Draw or type signature' },
+                          { title: 'Metadata', path: '/metadata', badge: 'bg-cyan-500 text-white', desc: 'Edit author & title' },
+                        ].map((item) => (
+                          <button
+                            key={item.title}
+                            onClick={() => { navigate(item.path); setIsDropdownOpen(false); }}
+                            className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 dark:hover:bg-zinc-800 text-left transition-colors group cursor-pointer"
+                          >
+                            <span className={`w-7 h-7 rounded-lg ${item.badge} flex items-center justify-center text-[10px] font-bold shrink-0 shadow-sm group-hover:scale-105 transition-transform`}>
+                              PDF
+                            </span>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-bold text-gray-900 dark:text-white truncate">{item.title}</p>
+                              <p className="text-[10px] text-gray-400 truncate">{item.desc}</p>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                  </div>
                 </div>
               )}
             </div>
+
+            {/* Quick Top Links (Smallpdf Style) */}
+            <nav className="hidden lg:flex items-center gap-1 text-xs font-semibold text-gray-600 dark:text-zinc-300">
+              <Link to="/compress" className="px-3 py-1.5 rounded-lg hover:text-rose-500 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-colors">Compress</Link>
+              <Link to="/pdf-to-word" className="px-3 py-1.5 rounded-lg hover:text-rose-500 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-colors">Convert</Link>
+              <Link to="/merge" className="px-3 py-1.5 rounded-lg hover:text-rose-500 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-colors">Merge</Link>
+              <Link to="/edit-pdf" className="px-3 py-1.5 rounded-lg hover:text-rose-500 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-colors">Edit</Link>
+              <Link to="/signature" className="px-3 py-1.5 rounded-lg hover:text-rose-500 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-colors">Sign</Link>
+            </nav>
           </div>
-          <div className="flex items-center gap-1 md:gap-3 shrink-0">
+
+          {/* Right Header Navigation */}
+          <div className="flex items-center gap-2 lg:gap-3 shrink-0">
             {isMobileBrowser && (
               <a
                 href="https://github.com/Softbee-Aashish/softbee-pdf/releases/latest/download/softbee-pdf.apk"
                 target="_blank"
-                className="hidden xs:flex items-center gap-2 px-3 py-1.5 bg-zinc-900 dark:bg-white text-white dark:text-black rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg active:scale-95 transition-all"
+                rel="noopener noreferrer"
+                className="hidden xs:flex items-center gap-1.5 px-3 py-1.5 bg-rose-500 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-500/20 active:scale-95 transition-all"
               >
-                <Download size={14} strokeWidth={3} />
+                <Download size={14} />
                 Get APK
               </a>
             )}
-            <Link to="/about" className={`p-2 md:px-4 md:py-2 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${location.pathname.includes('about') ? 'bg-rose-50 dark:bg-rose-900/20 text-rose-500' : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-zinc-900'}`}>
-              <InfoIcon size={18} />
-              <span className="hidden sm:block">About</span>
+            <Link to="/about" className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all hidden md:block ${location.pathname.includes('about') ? 'text-rose-500 bg-rose-50 dark:bg-rose-900/20' : 'text-gray-600 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-900'}`}>
+              About
             </Link>
-            <button onClick={toggleTheme} className="p-2 text-gray-400 hover:text-rose-500 transition-colors">
-              {theme === 'light' ? <MoonIcon size={20} /> : <SunIcon size={20} />}
+            <Link to="/contact" className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all hidden md:block ${location.pathname.includes('contact') ? 'text-rose-500 bg-rose-50 dark:bg-rose-900/20' : 'text-gray-600 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-900'}`}>
+              Contact
+            </Link>
+            <button onClick={toggleTheme} className="p-2 text-gray-500 hover:text-rose-500 transition-colors" title="Toggle theme">
+              {theme === 'light' ? <MoonIcon size={18} /> : <SunIcon size={18} />}
             </button>
-            <button onClick={() => setShowHistory(true)} className={`p-2 transition-colors relative ${showHistory ? 'text-rose-500' : 'text-gray-400 hover:text-rose-500'}`}>
-              <HistoryIcon size={20} />
+            <button onClick={() => setShowHistory(true)} className={`p-2 transition-colors relative ${showHistory ? 'text-rose-500' : 'text-gray-500 hover:text-rose-500'}`} title="Recent activity">
+              <HistoryIcon size={18} />
               {activity.length > 0 && <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white dark:border-black" />}
             </button>
           </div>
@@ -203,60 +334,112 @@ export default function Layout({ children, theme, toggleTheme, tools, onFileDrop
         {children}
       </main>
 
-      {/* Web Footer - Modern Compact Design */}
+      {/* Web Footer - SaaS Smallpdf Design */}
       {!showMobileNav && (
-        <footer className="border-t border-gray-100 dark:border-white/5 mt-20 bg-white dark:bg-black relative z-10">
-          <div className="max-w-7xl mx-auto px-6 md:px-8 py-10 md:py-12">
+        <footer className="border-t border-gray-200 dark:border-white/10 mt-20 bg-white dark:bg-zinc-950 relative z-10">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-16">
 
-            <div className="grid grid-cols-2 md:grid-cols-12 gap-8 mb-12">
-
-              {/* Brand Column (Span 6) */}
-              <div className="col-span-2 md:col-span-6 space-y-4">
-                <Link to="/" className="flex items-center gap-2.5 text-gray-900 dark:text-white group w-fit">
-                  <SoftBeeLogo size={22} iconColor="#F59E0B" partColor="currentColor" />
-                  <span className="font-bold tracking-tight text-lg group-hover:text-rose-500 transition-colors">SoftBee PDF</span>
+              {/* Col 1: Brand & Tagline */}
+              <div className="col-span-2 md:col-span-4 lg:col-span-1 space-y-4">
+                <Link to="/" className="flex items-center gap-2 text-gray-900 dark:text-white group w-fit">
+                  <SoftBeeLogo size={24} iconColor="#F59E0B" partColor="currentColor" />
+                  <span className="font-extrabold tracking-tight text-lg group-hover:text-rose-500 transition-colors">SoftBee PDF</span>
                 </Link>
-                <p className="text-gray-500 dark:text-zinc-500 text-xs leading-relaxed max-w-sm">
-                  The privacy-first PDF toolkit. 100% client-side logic. <br />
-                  Zero servers. Open source and forever free.
+                <p className="text-gray-500 dark:text-zinc-400 text-xs leading-relaxed max-w-xs">
+                  The privacy-first PDF toolkit. Process, convert, and protect documents 100% offline in your browser. Zero server uploads.
                 </p>
-                <div className="flex items-center gap-2 pt-1">
-                  <div className="flex items-center gap-2 px-2.5 py-1 bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 dark:text-emerald-400 rounded-full text-[9px] font-bold uppercase tracking-wide border border-emerald-100 dark:border-emerald-900/20">
-                    <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
-                    Live Engine
-                  </div>
-                  <a href="https://github.com/Softbee-Aashish/softbee-pdf" target="_blank" className="p-2 bg-gray-50 dark:bg-zinc-900 rounded-xl hover:bg-rose-500 hover:text-white transition-all text-gray-500 dark:text-zinc-500">
-                    <GHIcon size={14} />
-                  </a>
+                <div className="pt-2 flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 rounded-full text-[10px] font-bold border border-emerald-200/50 dark:border-emerald-900/30">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    100% Client-Side Engine
+                  </span>
                 </div>
               </div>
 
-              {/* Legal Column */}
-              <div className="col-span-1 md:col-span-3">
-                <h4 className="font-bold text-[10px] uppercase tracking-widest text-gray-900 dark:text-white mb-4">Protocol</h4>
-                <ul className="space-y-2.5 text-xs text-gray-500 dark:text-zinc-500">
-                  <li><Link to="/about" className="hover:text-rose-500 transition-colors">About</Link></li>
-                  <li><Link to="/privacy" className="hover:text-rose-500 transition-colors">Privacy Spec</Link></li>
-                  <li><a href="https://github.com/Softbee-Aashish/softbee-pdf/blob/main/LICENSE" target="_blank" className="hover:text-rose-500 transition-colors">License</a></li>
+              {/* Col 2: Popular Tools */}
+              <div>
+                <h4 className="font-bold text-xs uppercase tracking-wider text-gray-900 dark:text-white mb-4">PDF Tools</h4>
+                <ul className="space-y-2.5 text-xs text-gray-500 dark:text-zinc-400">
+                  <li><Link to="/merge" className="hover:text-rose-500 transition-colors">Merge PDF</Link></li>
+                  <li><Link to="/edit-pdf" className="hover:text-rose-500 transition-colors">Edit PDF</Link></li>
+                  <li><Link to="/compress" className="hover:text-rose-500 transition-colors">Compress PDF</Link></li>
+                  <li><Link to="/pdf-reader" className="hover:text-rose-500 transition-colors">PDF Reader</Link></li>
+                  <li><Link to="/split" className="hover:text-rose-500 transition-colors">Split PDF</Link></li>
+                  <li><Link to="/rotate-pdf" className="hover:text-rose-500 transition-colors">Rotate PDF</Link></li>
+                  <li><Link to="/rearrange-pdf" className="hover:text-rose-500 transition-colors">Rearrange Pages</Link></li>
+                  <li><Link to="/flatten" className="hover:text-rose-500 transition-colors">Flatten PDF</Link></li>
+                  <li><Link to="/page-numbers" className="hover:text-rose-500 transition-colors">Page Numbers</Link></li>
+                  <li><Link to="/watermark" className="hover:text-rose-500 transition-colors">Watermark PDF</Link></li>
                 </ul>
               </div>
 
-              {/* Community Column */}
-              <div className="col-span-1 md:col-span-3">
-                <h4 className="font-bold text-[10px] uppercase tracking-widest text-gray-900 dark:text-white mb-4">Ecosystem</h4>
-                <ul className="space-y-2.5 text-xs text-gray-500 dark:text-zinc-500">
-                  <li><a href="https://github.com/Softbee-Aashish" target="_blank" className="flex items-center gap-2 hover:text-rose-500 transition-colors">Sponsor <HeartIcon size={10} className="text-rose-500" /></a></li>
-                  <li><a href="https://github.com/Softbee-Aashish/softbee-pdf/issues" target="_blank" className="hover:text-rose-500 transition-colors">Report Bug</a></li>
+              {/* Col 3: Convert & Security */}
+              <div>
+                <h4 className="font-bold text-xs uppercase tracking-wider text-gray-900 dark:text-white mb-4">Convert & Security</h4>
+                <ul className="space-y-2.5 text-xs text-gray-500 dark:text-zinc-400">
+                  <li><Link to="/pdf-to-word" className="hover:text-rose-500 transition-colors">PDF to Word (.docx)</Link></li>
+                  <li><Link to="/word-to-pdf" className="hover:text-rose-500 transition-colors">Word to PDF</Link></li>
+                  <li><Link to="/pdf-to-excel" className="hover:text-rose-500 transition-colors">PDF to Excel (.csv)</Link></li>
+                  <li><Link to="/excel-to-pdf" className="hover:text-rose-500 transition-colors">Excel to PDF</Link></li>
+                  <li><Link to="/pdf-to-image" className="hover:text-rose-500 transition-colors">PDF to Image</Link></li>
+                  <li><Link to="/image-to-pdf" className="hover:text-rose-500 transition-colors">Image to PDF</Link></li>
+                  <li><Link to="/txt-to-pdf" className="hover:text-rose-500 transition-colors">TXT to PDF</Link></li>
+                  <li><Link to="/protect" className="hover:text-rose-500 transition-colors">Protect PDF</Link></li>
+                  <li><Link to="/unlock" className="hover:text-rose-500 transition-colors">Unlock PDF</Link></li>
+                  <li><Link to="/signature" className="hover:text-rose-500 transition-colors">Digital Signature</Link></li>
+                </ul>
+              </div>
+
+              {/* Col 4: Trust & Company */}
+              <div>
+                <h4 className="font-bold text-xs uppercase tracking-wider text-gray-900 dark:text-white mb-4">Trust & Company</h4>
+                <ul className="space-y-2.5 text-xs text-gray-500 dark:text-zinc-400">
+                  <li><Link to="/about" className="hover:text-rose-500 transition-colors">About Us</Link></li>
+                  <li><Link to="/contact" className="hover:text-rose-500 transition-colors">Contact Us</Link></li>
+                  <li><Link to="/privacy" className="hover:text-rose-500 transition-colors">Privacy Policy</Link></li>
+                  <li><Link to="/terms" className="hover:text-rose-500 transition-colors">Terms of Service</Link></li>
                   <li><Link to="/thanks" className="hover:text-rose-500 transition-colors">Hall of Fame</Link></li>
+                </ul>
+              </div>
+
+              {/* Col 5: Open Source & Mobile */}
+              <div>
+                <h4 className="font-bold text-xs uppercase tracking-wider text-gray-900 dark:text-white mb-4">Open Source & Mobile</h4>
+                <ul className="space-y-2.5 text-xs text-gray-500 dark:text-zinc-400">
+                  <li>
+                    <a href="https://github.com/Softbee-Aashish/softbee-pdf" target="_blank" rel="noopener noreferrer" className="hover:text-rose-500 transition-colors flex items-center gap-1.5">
+                      <GHIcon size={13} /> GitHub Repository
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/Softbee-Aashish/softbee-pdf/releases" target="_blank" rel="noopener noreferrer" className="hover:text-rose-500 transition-colors">
+                      Android APK Download
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/Softbee-Aashish/softbee-pdf/issues" target="_blank" rel="noopener noreferrer" className="hover:text-rose-500 transition-colors">
+                      Bug Tracker
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/Softbee-Aashish" target="_blank" rel="noopener noreferrer" className="hover:text-rose-500 transition-colors flex items-center gap-1">
+                      Sponsor <HeartIcon size={12} className="text-rose-500" />
+                    </a>
+                  </li>
                 </ul>
               </div>
 
             </div>
 
-            <div className="pt-6 border-t border-gray-100 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] text-gray-400 dark:text-zinc-600 font-medium">
-              <p>© 2026 SoftBee PDF. No cookies used.</p>
+            {/* Bottom Bar */}
+            <div className="pt-8 border-t border-gray-100 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400 dark:text-zinc-500">
+              <p>© 2026 SoftBee PDF — Licensed under GNU AGPL v3.0. 100% Client-Side Architecture.</p>
               <div className="flex gap-6 items-center">
-                <a href="https://github.com/Softbee-Aashish" target="_blank" className="hover:text-gray-900 dark:hover:text-white transition-colors">@Softbee-Aashish</a>
+                <Link to="/privacy" className="hover:text-gray-900 dark:hover:text-white transition-colors">Privacy Policy</Link>
+                <Link to="/terms" className="hover:text-gray-900 dark:hover:text-white transition-colors">Terms of Service</Link>
+                <Link to="/contact" className="hover:text-gray-900 dark:hover:text-white transition-colors">Contact</Link>
+                <a href="https://github.com/Softbee-Aashish/softbee-pdf" target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition-colors">GitHub</a>
               </div>
             </div>
           </div>
