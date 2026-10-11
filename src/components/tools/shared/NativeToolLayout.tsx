@@ -10,6 +10,7 @@ interface NativeToolLayoutProps {
   children: React.ReactNode
   actions?: React.ReactNode
   onBack?: () => void
+  showHeader?: boolean
 }
 
 export const NativeToolLayout = ({
@@ -17,7 +18,8 @@ export const NativeToolLayout = ({
   description,
   children,
   actions,
-  onBack
+  onBack,
+  showHeader = false
 }: NativeToolLayoutProps) => {
   const navigate = useNavigate()
 
@@ -49,11 +51,13 @@ export const NativeToolLayout = ({
       )}
 
       {/* Main Content Area */}
-      <main className={`flex-1 flex flex-col p-4 md:p-8 max-w-5xl mx-auto w-full ${actions ? 'pb-32 md:pb-8' : ''}`}>
-        {/* Web View Header (Only Visible on Desktop or when native header is hidden) */}
-        <div className={`${showNativeHeader ? 'hidden md:block' : 'block'} mb-8`}>
-          <ToolHeader title={title} description={description} />
-        </div>
+      <main className={`flex-1 flex flex-col p-4 md:py-6 md:px-8 max-w-5xl mx-auto w-full ${actions ? 'pb-32 md:pb-8' : ''}`}>
+        {/* Web View Header (Only shown when explicitly requested) */}
+        {showHeader && (
+          <div className={`${showNativeHeader ? 'hidden md:block' : 'block'} mb-6`}>
+            <ToolHeader title={title} description={description} />
+          </div>
+        )}
 
         {/* Content Wrapper */}
         <div className="flex-1">

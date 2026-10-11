@@ -43,8 +43,8 @@ export default function ToolLandingPage({
     <div className="space-y-20 max-w-5xl mx-auto pb-16 animate-in fade-in duration-300">
       
       {/* 1. TOP HERO & COLORED DROPZONE (Smallpdf Style) */}
-      <section className="space-y-8 text-center pt-2">
-        <div className="max-w-2xl mx-auto space-y-3">
+      <section className="space-y-6 text-center pt-0 md:pt-2">
+        <div className="max-w-2xl mx-auto space-y-2">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-gray-900 dark:text-white leading-tight">
             {config.pageTitle}
           </h1>
@@ -68,7 +68,7 @@ export default function ToolLandingPage({
           onClick={() => fileInputRef.current?.click()}
           onDragOver={handleDragOver}
           onDrop={handleDrop}
-          className={`w-full ${config.bannerColor} ${config.bannerTextColor} rounded-[2rem] sm:rounded-[2.5rem] p-12 sm:p-16 text-center cursor-pointer shadow-2xl transition-all duration-300 group flex flex-col items-center justify-center border-4 border-transparent hover:border-white/30 hover:scale-[1.005] relative overflow-hidden`}
+          className={`w-full max-w-4xl mx-auto ${config.bannerColor} ${config.bannerTextColor} rounded-[2rem] sm:rounded-[2.5rem] p-9 sm:p-12 text-center cursor-pointer shadow-2xl transition-all duration-300 group flex flex-col items-center justify-center border-4 border-transparent hover:border-white/30 hover:scale-[1.005] relative overflow-hidden`}
         >
           {/* Subtle background glow */}
           <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
