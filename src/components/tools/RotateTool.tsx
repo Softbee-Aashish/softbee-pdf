@@ -9,6 +9,8 @@ import { usePipeline } from '../../utils/pipelineContext'
 import SuccessState from './shared/SuccessState'
 import PrivacyBadge from './shared/PrivacyBadge'
 import { NativeToolLayout } from './shared/NativeToolLayout'
+import ToolLandingPage from './shared/ToolLandingPage'
+import { toolsSeoData } from '../../utils/toolSeoData'
 
 type RotatePdfData = { file: File, pageCount: number, isLocked: boolean, pdfDoc?: any, password?: string, thumbnail?: string }
 
@@ -103,11 +105,11 @@ export default function RotateTool() {
       <input type="file" accept=".pdf" className="hidden" ref={fileInputRef} onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])} />
       
       {!pdfData ? (
-        <div onClick={() => !isProcessing && fileInputRef.current?.click()} className="border-4 border-dashed border-gray-100 dark:border-zinc-900 rounded-[2.5rem] p-12 text-center hover:bg-rose-50 dark:hover:bg-rose-900/10 transition-all cursor-pointer group">
-          <div className="w-20 h-20 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform"><RotateCw size={32} /></div>
-          <h3 className="text-xl font-bold dark:text-white mb-2">Select PDF</h3>
-          <p className="text-sm text-gray-400">Tap to start rotating</p>
-        </div>
+        <ToolLandingPage
+          config={toolsSeoData['rotate-pdf']}
+          onFileSelect={(files) => files[0] && handleFile(files[0])}
+          accept=".pdf"
+        />
       ) : pdfData.isLocked ? (
         <div className="max-w-md mx-auto relative z-[100]">
           <div className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-gray-100 dark:border-white/5 text-center shadow-2xl">
@@ -176,7 +178,7 @@ export default function RotateTool() {
           </div>
         </div>
       )}
-      <PrivacyBadge />
+      {pdfData && <PrivacyBadge />}
     </NativeToolLayout>
   )
 }

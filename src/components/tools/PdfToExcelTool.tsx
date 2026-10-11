@@ -1,13 +1,14 @@
 import { useState, useRef, useEffect } from 'react'
-import { FileSpreadsheet, Upload, Loader2, ArrowRight, Check } from 'lucide-react'
+import { FileSpreadsheet, Loader2, ArrowRight } from 'lucide-react'
 import { toast } from 'sonner'
 import { Capacitor } from '@capacitor/core'
 import { getPdfMetaData, loadPdfDocument } from '../../utils/pdfHelpers'
 import { addActivity } from '../../utils/recentActivity'
 import { usePipeline } from '../../utils/pipelineContext'
 import SuccessState from './shared/SuccessState'
-import PrivacyBadge from './shared/PrivacyBadge'
 import { NativeToolLayout } from './shared/NativeToolLayout'
+import ToolLandingPage from './shared/ToolLandingPage'
+import { toolsSeoData } from '../../utils/toolSeoData'
 
 export default function PdfToExcelTool() {
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -150,37 +151,11 @@ export default function PdfToExcelTool() {
           showPreview={false}
         />
       ) : !file ? (
-        <div className="space-y-8 max-w-4xl mx-auto">
-          {/* Smallpdf Emerald Excel Dropzone */}
-          <div
-            onClick={() => !isProcessing && fileInputRef.current?.click()}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              e.preventDefault()
-              if (e.dataTransfer.files?.[0]) handleFile(e.dataTransfer.files[0])
-            }}
-            className="w-full bg-[#059669] hover:bg-[#047857] text-white rounded-[2rem] p-12 sm:p-16 text-center cursor-pointer shadow-xl transition-all duration-300 group flex flex-col items-center justify-center border-4 border-transparent hover:border-white/30"
-          >
-            <div className="w-16 h-16 rounded-2xl bg-white/15 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <FileSpreadsheet size={36} className="text-white" />
-            </div>
-
-            <div className="inline-flex items-center gap-2 px-5 py-3 bg-white text-gray-900 rounded-xl font-bold shadow-md hover:bg-gray-50 active:scale-95 transition-all text-sm mb-3">
-              <Upload size={16} />
-              <span>CHOOSE FILES</span>
-            </div>
-
-            <p className="text-sm text-white/80 font-medium">or drop PDF files here</p>
-
-            <div className="mt-8 pt-6 border-t border-white/15 flex flex-wrap items-center justify-center gap-6 text-xs text-white/90 font-medium">
-              <span className="flex items-center gap-1.5"><Check size={14} className="text-white" /> Excel-compatible table export</span>
-              <span className="flex items-center gap-1.5"><Check size={14} className="text-white" /> UTF-8 encoded with full formatting</span>
-              <span className="flex items-center gap-1.5"><Check size={14} className="text-white" /> 100% Client-Side Privacy</span>
-            </div>
-          </div>
-
-          <PrivacyBadge />
-        </div>
+        <ToolLandingPage
+          config={toolsSeoData['pdf-to-excel']}
+          onFileSelect={(files) => files[0] && handleFile(files[0])}
+          accept=".pdf"
+        />
       ) : (
         <div className="max-w-xl mx-auto bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-gray-200 dark:border-zinc-800 shadow-sm space-y-6 text-center">
           <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto">

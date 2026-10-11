@@ -10,6 +10,8 @@ import { usePipeline } from '../../utils/pipelineContext'
 import SuccessState from './shared/SuccessState'
 import PrivacyBadge from './shared/PrivacyBadge'
 import { NativeToolLayout } from './shared/NativeToolLayout'
+import ToolLandingPage from './shared/ToolLandingPage'
+import { toolsSeoData } from '../../utils/toolSeoData'
 
 type ImageFormat = 'jpg' | 'png'
 type PdfData = { file: File, thumbnail?: string, pageCount: number, isLocked: boolean, pdfDoc?: any, password?: string }
@@ -105,14 +107,11 @@ export default function PdfToImageTool() {
     <NativeToolLayout title="PDF to Image" description="Convert document pages into high-quality images." actions={pdfData && !pdfData.isLocked && !downloadUrl && <ActionButton />}>
       <input type="file" accept=".pdf" className="hidden" ref={fileInputRef} onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])} />
       {!pdfData ? (
-        <button 
-          onClick={() => !isProcessing && fileInputRef.current?.click()} 
-          className="w-full border-4 border-dashed border-gray-100 dark:border-zinc-900 rounded-[2.5rem] p-12 text-center hover:bg-rose-50 dark:hover:bg-rose-900/10 transition-all cursor-pointer group"
-        >
-          <div className="w-20 h-20 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform"><ImageIcon size={32} /></div>
-          <h3 className="text-xl font-bold dark:text-white mb-2">Select PDF</h3>
-          <p className="text-sm text-gray-400">Tap to start converting</p>
-        </button>
+        <ToolLandingPage
+          config={toolsSeoData['pdf-to-image']}
+          onFileSelect={(files) => files[0] && handleFile(files[0])}
+          accept=".pdf"
+        />
       ) : pdfData.isLocked ? (
         <div className="max-w-md mx-auto">
           <div className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-gray-100 dark:border-white/5 text-center">
@@ -142,7 +141,7 @@ export default function PdfToImageTool() {
           </div>
         </div>
       )}
-      <PrivacyBadge />
+      {pdfData && <PrivacyBadge />}
     </NativeToolLayout>
   )
 }

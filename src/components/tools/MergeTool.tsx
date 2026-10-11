@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Plus, X, Loader2, GripVertical, Lock, RotateCw, Upload, RefreshCw, ArrowRight } from 'lucide-react'
+import { Plus, X, Loader2, GripVertical, Lock, RotateCw, RefreshCw, ArrowRight } from 'lucide-react'
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core'
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -14,6 +14,8 @@ import { saveWorkspace, getWorkspace, clearWorkspace } from '../../utils/workspa
 import SuccessState from './shared/SuccessState'
 import PrivacyBadge from './shared/PrivacyBadge'
 import { NativeToolLayout } from './shared/NativeToolLayout'
+import ToolLandingPage from './shared/ToolLandingPage'
+import { toolsSeoData } from '../../utils/toolSeoData'
 
 // File Item Type
 type PdfFile = {
@@ -466,16 +468,12 @@ export default function MergeTool() {
               )}
             </div>
           ) : (
-            <button 
-              onClick={() => !isProcessing && fileInputRef.current?.click()}
-              className="w-full border-4 border-dashed border-gray-100 dark:border-zinc-900 rounded-[2.5rem] p-12 text-center hover:bg-rose-50 dark:hover:bg-rose-900/10 transition-all cursor-pointer group"
-            >
-               <div className="w-20 h-20 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-inner">
-                  <Upload size={32} />
-               </div>
-               <h3 className="text-xl font-bold dark:text-white mb-2">Select PDF Files</h3>
-               <p className="text-sm text-gray-400 font-medium">Tap to browse or drag and drop here</p>
-            </button>
+            <ToolLandingPage
+              config={toolsSeoData['merge']}
+              onFileSelect={handleFiles}
+              accept=".pdf"
+              multiple
+            />
           )}
 
           {files.length > 0 && !objectUrl && !isNative && (

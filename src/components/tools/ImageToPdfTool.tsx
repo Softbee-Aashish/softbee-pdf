@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Plus, X, Loader2, GripVertical, Upload, ArrowRight } from 'lucide-react'
+import { Plus, X, Loader2, GripVertical, ArrowRight } from 'lucide-react'
 import { PDFDocument } from 'pdf-lib'
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core'
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable'
@@ -11,6 +11,8 @@ import { addActivity } from '../../utils/recentActivity'
 import SuccessState from './shared/SuccessState'
 import PrivacyBadge from './shared/PrivacyBadge'
 import { NativeToolLayout } from './shared/NativeToolLayout'
+import ToolLandingPage from './shared/ToolLandingPage'
+import { toolsSeoData } from '../../utils/toolSeoData'
 
 type ImageFile = { id: string, file: File, preview: string }
 
@@ -74,11 +76,12 @@ export default function ImageToPdfTool() {
     <NativeToolLayout title="Image to PDF" description="Convert photos and images into a professional PDF." actions={images.length > 0 && !downloadUrl && <ActionButton />}>
       <input type="file" multiple accept="image/*" className="hidden" ref={fileInputRef} onChange={(e) => e.target.files && handleFiles(e.target.files)} />
       {images.length === 0 ? (
-        <div onClick={() => fileInputRef.current?.click()} className="border-4 border-dashed border-gray-100 dark:border-zinc-900 rounded-[2.5rem] p-12 text-center hover:bg-rose-50 dark:hover:bg-rose-900/10 transition-all cursor-pointer group">
-          <div className="w-20 h-20 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform"><Upload size={32} /></div>
-          <h3 className="text-xl font-bold dark:text-white mb-2">Select Images</h3>
-          <p className="text-sm text-gray-400">JPG, PNG, or WebP</p>
-        </div>
+        <ToolLandingPage
+          config={toolsSeoData['image-to-pdf']}
+          onFileSelect={(files) => handleFiles(files)}
+          accept="image/*"
+          multiple={true}
+        />
       ) : !downloadUrl ? (
         <div className="space-y-6">
           <div className="flex justify-between items-center px-1"><p className="text-[10px] font-black uppercase text-gray-400">{images.length} Images</p><button onClick={() => setImages([])} className="text-[10px] font-black uppercase text-rose-500/60">Clear</button></div>
@@ -90,7 +93,7 @@ export default function ImageToPdfTool() {
       ) : (
         <SuccessState message="PDF Ready!" downloadUrl={downloadUrl} fileName={`${customFileName}.pdf`} onStartOver={() => { setImages([]); setDownloadUrl(null); }} />
       )}
-      <PrivacyBadge />
+      {images.length > 0 && <PrivacyBadge />}
     </NativeToolLayout>
   )
 }

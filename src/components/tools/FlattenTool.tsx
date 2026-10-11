@@ -6,6 +6,8 @@ import { addActivity } from '../../utils/recentActivity'
 import { usePipeline } from '../../utils/pipelineContext'
 import SuccessState from './shared/SuccessState'
 import ToolHeader from './shared/ToolHeader'
+import ToolLandingPage from './shared/ToolLandingPage'
+import { toolsSeoData } from '../../utils/toolSeoData'
 
 export default function FlattenTool() {
   const [file, setFile] = useState<File | null>(null)
@@ -79,45 +81,46 @@ export default function FlattenTool() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-12">
-      <ToolHeader
-        title="Flatten"
-        highlight="PDF"
-        description="Merge form fields, text layers, and annotations into static non-editable document pages."
+    <>
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept=".pdf,application/pdf"
+        className="hidden"
       />
 
       {result ? (
-        <SuccessState
-          message="PDF Flattened Successfully"
-          fileName={result.name}
-          downloadUrl={result.url}
-          onStartOver={() => {
-            setFile(null)
-            setResult(null)
+        <div className="max-w-4xl mx-auto px-6 py-12">
+          <SuccessState
+            message="PDF Flattened Successfully"
+            fileName={result.name}
+            downloadUrl={result.url}
+            onStartOver={() => {
+              setFile(null)
+              setResult(null)
+            }}
+          />
+        </div>
+      ) : !file ? (
+        <ToolLandingPage
+          config={toolsSeoData['flatten']}
+          onFileSelect={(files) => {
+            if (files[0]) {
+              setFile(files[0])
+              setResult(null)
+            }
           }}
+          accept=".pdf,application/pdf"
         />
       ) : (
-        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-8 md:p-12 border border-gray-100 dark:border-white/5 shadow-sm space-y-8">
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            accept=".pdf,application/pdf"
-            className="hidden"
+        <div className="max-w-4xl mx-auto px-6 py-12 space-y-6">
+          <ToolHeader
+            title="Flatten"
+            highlight="PDF"
+            description="Merge form fields, text layers, and annotations into static non-editable document pages."
           />
-
-          {!file ? (
-            <div
-              onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-gray-200 dark:border-zinc-800 rounded-3xl p-12 text-center hover:border-rose-500 cursor-pointer transition-colors group"
-            >
-              <div className="w-16 h-16 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                <Layers size={32} />
-              </div>
-              <h3 className="text-lg font-bold dark:text-white mb-2">Choose PDF to Flatten</h3>
-              <p className="text-xs text-gray-400">Click to browse or drop your document here</p>
-            </div>
-          ) : (
+          <div className="bg-white dark:bg-zinc-900 rounded-3xl p-8 md:p-12 border border-gray-100 dark:border-white/5 shadow-sm space-y-8">
             <div className="space-y-6">
               <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-zinc-800/60 rounded-2xl border border-gray-100 dark:border-white/5">
                 <div className="flex items-center gap-3">
@@ -162,9 +165,9 @@ export default function FlattenTool() {
                 )}
               </button>
             </div>
-          )}
+          </div>
         </div>
       )}
-    </div>
+    </>
   )
 }

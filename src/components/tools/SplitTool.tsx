@@ -10,6 +10,8 @@ import { useObjectURL } from '../../utils/useObjectURL'
 import SuccessState from './shared/SuccessState'
 import PrivacyBadge from './shared/PrivacyBadge'
 import { NativeToolLayout } from './shared/NativeToolLayout'
+import ToolLandingPage from './shared/ToolLandingPage'
+import { toolsSeoData } from '../../utils/toolSeoData'
 
 type SplitPdfFile = {
   file: File
@@ -181,25 +183,11 @@ export default function SplitTool() {
       <input type="file" accept=".pdf" className="hidden" ref={fileInputRef} onChange={handleFileSelect} />
 
       {!pdfData ? (
-        <button 
-          onClick={() => !isLoadingMeta && fileInputRef.current?.click()} 
-          className={`w-full border-4 border-dashed border-gray-100 dark:border-zinc-900 rounded-[2.5rem] p-12 text-center hover:bg-rose-50 dark:hover:bg-rose-900/10 transition-all cursor-pointer group ${isLoadingMeta ? 'opacity-50 cursor-wait' : ''}`}
-        >
-          {isLoadingMeta ? (
-            <div className="flex flex-col items-center">
-              <Loader2 size={48} className="text-rose-500 animate-spin mb-4" />
-              <h3 className="text-xl font-bold mb-2">Analyzing PDF...</h3>
-            </div>
-          ) : (
-            <>
-              <div className="w-20 h-20 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                <Scissors size={32} />
-              </div>
-              <h3 className="text-xl font-bold dark:text-white mb-2">Select PDF File</h3>
-              <p className="text-sm text-gray-400 font-medium">Tap to start splitting</p>
-            </>
-          )}
-        </button>
+        <ToolLandingPage
+          config={toolsSeoData['split']}
+          onFileSelect={(files) => files[0] && handleFile(files[0])}
+          accept=".pdf"
+        />
       ) : pdfData.isLocked ? (
         <div className="max-w-md mx-auto relative z-[100]">
           <div className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-gray-100 dark:border-white/5 shadow-2xl text-center">

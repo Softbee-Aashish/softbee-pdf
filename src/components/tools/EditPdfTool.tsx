@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import {
   Type, Square, Highlighter, EyeOff, Loader2,
   ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RotateCcw,
-  ArrowRight, Upload, Check
+  ArrowRight
 } from 'lucide-react'
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib'
 import { toast } from 'sonner'
@@ -11,8 +11,9 @@ import { getPdfMetaData, loadPdfDocument, renderPageThumbnail } from '../../util
 import { addActivity } from '../../utils/recentActivity'
 import { usePipeline } from '../../utils/pipelineContext'
 import SuccessState from './shared/SuccessState'
-import PrivacyBadge from './shared/PrivacyBadge'
 import { NativeToolLayout } from './shared/NativeToolLayout'
+import ToolLandingPage from './shared/ToolLandingPage'
+import { toolsSeoData } from '../../utils/toolSeoData'
 
 type AnnotationType = 'text' | 'shape' | 'highlight' | 'redact'
 
@@ -331,37 +332,11 @@ export default function EditPdfTool() {
           }}
         />
       ) : !file ? (
-        /* Smallpdf Teal Editor Dropzone */
-        <div className="space-y-8 max-w-4xl mx-auto">
-          <div
-            onClick={() => !isProcessing && fileInputRef.current?.click()}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              e.preventDefault()
-              if (e.dataTransfer.files?.[0]) handleFile(e.dataTransfer.files[0])
-            }}
-            className="w-full bg-[#00A896] hover:bg-[#029384] text-white rounded-[2rem] p-12 sm:p-16 text-center cursor-pointer shadow-xl transition-all duration-300 group flex flex-col items-center justify-center border-4 border-transparent hover:border-white/30"
-          >
-            <div className="w-16 h-16 rounded-2xl bg-white/15 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <Type size={36} className="text-white" />
-            </div>
-
-            <div className="inline-flex items-center gap-2 px-5 py-3 bg-white text-gray-900 rounded-xl font-bold shadow-md hover:bg-gray-50 active:scale-95 transition-all text-sm mb-3">
-              <Upload size={16} />
-              <span>CHOOSE FILES</span>
-            </div>
-
-            <p className="text-sm text-white/80 font-medium">or drop files here</p>
-
-            <div className="mt-8 pt-6 border-t border-white/15 flex flex-wrap items-center justify-center gap-6 text-xs text-white/90 font-medium">
-              <span className="flex items-center gap-1.5"><Check size={14} className="text-white" /> Free online PDF editing</span>
-              <span className="flex items-center gap-1.5"><Check size={14} className="text-white" /> Add text, shapes & highlights</span>
-              <span className="flex items-center gap-1.5"><Check size={14} className="text-white" /> 100% Client-Side Privacy</span>
-            </div>
-          </div>
-
-          <PrivacyBadge />
-        </div>
+        <ToolLandingPage
+          config={toolsSeoData['edit-pdf']}
+          onFileSelect={(files) => files[0] && handleFile(files[0])}
+          accept=".pdf"
+        />
       ) : (
         /* Editor Workspace (Smallpdf Style) */
         <div className="space-y-6">

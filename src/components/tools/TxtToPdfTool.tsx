@@ -5,6 +5,8 @@ import { toast } from 'sonner'
 import { addActivity } from '../../utils/recentActivity'
 import SuccessState from './shared/SuccessState'
 import ToolHeader from './shared/ToolHeader'
+import ToolLandingPage from './shared/ToolLandingPage'
+import { toolsSeoData } from '../../utils/toolSeoData'
 
 export default function TxtToPdfTool() {
   const [file, setFile] = useState<File | null>(null)
@@ -13,21 +15,25 @@ export default function TxtToPdfTool() {
   const [result, setResult] = useState<{ url: string, name: string, size: number } | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const processFile = async (selected: File) => {
+    if (!selected.name.endsWith('.txt') && selected.type !== 'text/plain') {
+      toast.error('Please select a valid plain text (.txt) file.')
+      return
+    }
+    try {
+      const text = await selected.text()
+      setFile(selected)
+      setTextContent(text)
+      setResult(null)
+    } catch {
+      toast.error('Could not read text file.')
+    }
+  }
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0]
     if (selected) {
-      if (!selected.name.endsWith('.txt') && selected.type !== 'text/plain') {
-        toast.error('Please select a valid plain text (.txt) file.')
-        return
-      }
-      try {
-        const text = await selected.text()
-        setFile(selected)
-        setTextContent(text)
-        setResult(null)
-      } catch (err) {
-        toast.error('Could not read text file.')
-      }
+      await processFile(selected)
     }
   }
 
@@ -127,46 +133,42 @@ export default function TxtToPdfTool() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-12">
-      <ToolHeader
-        title="TXT to"
-        highlight="PDF"
-        description="Convert plain text files or raw notes into standard, formatted PDF documents."
+    <>
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept=".txt,text/plain"
+        className="hidden"
       />
 
       {result ? (
-        <SuccessState
-          message="PDF Generated Successfully"
-          fileName={result.name}
-          downloadUrl={result.url}
-          onStartOver={() => {
-            setFile(null)
-            setTextContent('')
-            setResult(null)
-          }}
+        <div className="max-w-4xl mx-auto px-6 py-12">
+          <SuccessState
+            message="PDF Generated Successfully"
+            fileName={result.name}
+            downloadUrl={result.url}
+            onStartOver={() => {
+              setFile(null)
+              setTextContent('')
+              setResult(null)
+            }}
+          />
+        </div>
+      ) : !file ? (
+        <ToolLandingPage
+          config={toolsSeoData['txt-to-pdf']}
+          onFileSelect={(files) => files[0] && processFile(files[0])}
+          accept=".txt,text/plain"
         />
       ) : (
-        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-8 md:p-12 border border-gray-100 dark:border-white/5 shadow-sm space-y-8">
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            accept=".txt,text/plain"
-            className="hidden"
+        <div className="max-w-4xl mx-auto px-6 py-12 space-y-6">
+          <ToolHeader
+            title="TXT to"
+            highlight="PDF"
+            description="Convert plain text files or raw notes into standard, formatted PDF documents."
           />
-
-          {!file ? (
-            <div
-              onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-gray-200 dark:border-zinc-800 rounded-3xl p-12 text-center hover:border-blue-500 cursor-pointer transition-colors group"
-            >
-              <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 text-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                <FileText size={32} />
-              </div>
-              <h3 className="text-lg font-bold dark:text-white mb-2">Choose .TXT File to Convert</h3>
-              <p className="text-xs text-gray-400">Click to upload your plain text file</p>
-            </div>
-          ) : (
+          <div className="bg-white dark:bg-zinc-900 rounded-3xl p-8 md:p-12 border border-gray-100 dark:border-white/5 shadow-sm space-y-8">
             <div className="space-y-6">
               <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-zinc-800/60 rounded-2xl border border-gray-100 dark:border-white/5">
                 <div className="flex items-center gap-3">
@@ -216,9 +218,9 @@ export default function TxtToPdfTool() {
                 )}
               </button>
             </div>
-          )}
+          </div>
         </div>
       )}
-    </div>
+    </>
   )
 }

@@ -1,13 +1,14 @@
 import { useState, useRef, useEffect } from 'react'
 import {
-  BookOpen, ChevronLeft, ChevronRight, ZoomIn, ZoomOut,
-  RotateCw, Printer, Download, Upload, Loader2, Check
+  ChevronLeft, ChevronRight, ZoomIn, ZoomOut,
+  RotateCw, Printer, Download, Loader2
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { getPdfMetaData, loadPdfDocument, renderPageThumbnail } from '../../utils/pdfHelpers'
 import { usePipeline } from '../../utils/pipelineContext'
-import PrivacyBadge from './shared/PrivacyBadge'
 import { NativeToolLayout } from './shared/NativeToolLayout'
+import ToolLandingPage from './shared/ToolLandingPage'
+import { toolsSeoData } from '../../utils/toolSeoData'
 
 export default function PdfReaderTool() {
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -20,7 +21,6 @@ export default function PdfReaderTool() {
   const [pageThumbnails, setPageThumbnails] = useState<string[]>([])
   const [zoom, setZoom] = useState(100)
   const [rotation, setRotation] = useState(0)
-  const [isProcessing, setIsProcessing] = useState(false)
   const [renderedImageUrl, setRenderedImageUrl] = useState<string | null>(null)
 
   useEffect(() => {
@@ -54,7 +54,6 @@ export default function PdfReaderTool() {
       return
     }
 
-    setIsProcessing(true)
     try {
       const meta = await getPdfMetaData(selectedFile)
       if (meta.isLocked) {
@@ -84,7 +83,6 @@ export default function PdfReaderTool() {
       console.error(err)
       toast.error('Failed to open PDF document.')
     } finally {
-      setIsProcessing(false)
       if (fileInputRef.current) fileInputRef.current.value = ''
     }
   }
@@ -128,36 +126,11 @@ export default function PdfReaderTool() {
       />
 
       {!file ? (
-        <div className="space-y-8 max-w-4xl mx-auto">
-          <div
-            onClick={() => !isProcessing && fileInputRef.current?.click()}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              e.preventDefault()
-              if (e.dataTransfer.files?.[0]) handleFile(e.dataTransfer.files[0])
-            }}
-            className="w-full bg-[#10B981] hover:bg-[#059669] text-white rounded-[2rem] p-12 sm:p-16 text-center cursor-pointer shadow-xl transition-all duration-300 group flex flex-col items-center justify-center border-4 border-transparent hover:border-white/30"
-          >
-            <div className="w-16 h-16 rounded-2xl bg-white/15 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <BookOpen size={36} className="text-white" />
-            </div>
-
-            <div className="inline-flex items-center gap-2 px-5 py-3 bg-white text-gray-900 rounded-xl font-bold shadow-md hover:bg-gray-50 active:scale-95 transition-all text-sm mb-3">
-              <Upload size={16} />
-              <span>CHOOSE FILES</span>
-            </div>
-
-            <p className="text-sm text-white/80 font-medium">or drop files here</p>
-
-            <div className="mt-8 pt-6 border-t border-white/15 flex flex-wrap items-center justify-center gap-6 text-xs text-white/90 font-medium">
-              <span className="flex items-center gap-1.5"><Check size={14} className="text-white" /> Fast, fluid page viewer</span>
-              <span className="flex items-center gap-1.5"><Check size={14} className="text-white" /> Zoom & page navigation</span>
-              <span className="flex items-center gap-1.5"><Check size={14} className="text-white" /> 100% Client-Side Privacy</span>
-            </div>
-          </div>
-
-          <PrivacyBadge />
-        </div>
+        <ToolLandingPage
+          config={toolsSeoData['pdf-reader']}
+          onFileSelect={(files) => files[0] && handleFile(files[0])}
+          accept=".pdf"
+        />
       ) : (
         <div className="space-y-6">
           {/* Top Reader Controls */}

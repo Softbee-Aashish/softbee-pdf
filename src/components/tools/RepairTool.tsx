@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Loader2, ShieldAlert, Upload, X, FileCheck } from 'lucide-react'
+import { Loader2, ShieldAlert, X, FileCheck } from 'lucide-react'
 import { PDFDocument } from 'pdf-lib'
 import { toast } from 'sonner'
 
@@ -8,6 +8,8 @@ import { usePipeline } from '../../utils/pipelineContext'
 import SuccessState from './shared/SuccessState'
 import PrivacyBadge from './shared/PrivacyBadge'
 import { NativeToolLayout } from './shared/NativeToolLayout'
+import ToolLandingPage from './shared/ToolLandingPage'
+import { toolsSeoData } from '../../utils/toolSeoData'
 
 export default function RepairTool() {
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -67,11 +69,11 @@ export default function RepairTool() {
       <input type="file" accept=".pdf" className="hidden" ref={fileInputRef} onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])} />
 
       {!originalFile ? (
-        <div onClick={() => !isProcessing && fileInputRef.current?.click()} className="border-4 border-dashed border-gray-100 dark:border-zinc-900 rounded-[2.5rem] p-12 text-center hover:bg-rose-50 dark:hover:bg-rose-900/10 transition-all cursor-pointer group">
-          <div className="w-20 h-20 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform"><Upload size={32} /></div>
-          <h3 className="text-xl font-bold dark:text-white mb-2">Select Corrupted PDF</h3>
-          <p className="text-sm text-gray-400">Tap to browse local files</p>
-        </div>
+        <ToolLandingPage
+          config={toolsSeoData['repair']}
+          onFileSelect={(files) => files[0] && handleFile(files[0])}
+          accept=".pdf"
+        />
       ) : (
         <div className="space-y-6">
           <div className="bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-gray-100 dark:border-white/5 flex items-center gap-6 shadow-sm">
@@ -103,14 +105,16 @@ export default function RepairTool() {
         </div>
       )}
 
-      <div className="mt-8 p-6 bg-amber-50 dark:bg-amber-900/10 rounded-2xl border border-amber-100 dark:border-white/5 flex items-start gap-4">
-        <ShieldAlert className="text-amber-500 shrink-0" size={20} />
-        <div className="text-xs text-amber-700 dark:text-amber-400 leading-relaxed text-left">
-          <p className="font-black mb-1 uppercase tracking-widest text-[10px]">Technical Protocol:</p>
-          SoftBee PDF rebuilds the internal cross-reference table and regenerates the file structure from scratch. This can restore access to many files that "cannot be opened."
+      {originalFile && (
+        <div className="mt-8 p-6 bg-amber-50 dark:bg-amber-900/10 rounded-2xl border border-amber-100 dark:border-white/5 flex items-start gap-4">
+          <ShieldAlert className="text-amber-500 shrink-0" size={20} />
+          <div className="text-xs text-amber-700 dark:text-amber-400 leading-relaxed text-left">
+            <p className="font-black mb-1 uppercase tracking-widest text-[10px]">Technical Protocol:</p>
+            SoftBee PDF rebuilds the internal cross-reference table and regenerates the file structure from scratch. This can restore access to many files that "cannot be opened."
+          </div>
         </div>
-      </div>
-      <PrivacyBadge />
+      )}
+      {originalFile && <PrivacyBadge />}
     </NativeToolLayout>
   )
 }
