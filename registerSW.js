@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/softbee-pdf/sw.js', { scope: '/softbee-pdf/' })})}
