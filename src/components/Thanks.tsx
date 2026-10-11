@@ -1,7 +1,6 @@
 import { Github as GHIcon, Heart as HeartIcon, Sparkles, ChevronRight } from 'lucide-react'
 import { Capacitor } from '@capacitor/core'
 import { NativeToolLayout } from './tools/shared/NativeToolLayout'
-import { SoftBeeLogo } from './Logo'
 
 export default function Thanks() {
   const isNative = Capacitor.isNativePlatform()
@@ -80,11 +79,6 @@ export default function Thanks() {
           ))}
         </div>
       </div>
-
-      <footer className="text-center py-8 opacity-20">
-        <SoftBeeLogo size={24} iconColor="#F59E0B" partColor="currentColor" className="mx-auto mb-4" />
-        <p className="text-[8px] font-black uppercase tracking-[0.5em]">SoftBee PDF v1.0.0</p>
-      </footer>
     </div>
   )
 

@@ -62,9 +62,9 @@ const PrivacyWeb = () => {
             <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 text-blue-500 rounded-xl flex items-center justify-center">
               <EyeOff size={20} />
             </div>
-            <h3 className="font-black text-sm uppercase tracking-widest dark:text-white">Zero Telemetry</h3>
+            <h3 className="font-black text-sm uppercase tracking-widest dark:text-white">Zero Document Telemetry</h3>
             <p className="text-sm text-gray-500 dark:text-zinc-400 leading-relaxed font-medium">
-              No tracking pixels. No cookies. No user IDs. We have no way of knowing how many files you process or who you are.
+              Your files and document contents are processed 100% locally in your device RAM and are never uploaded, analyzed, or sent to any server.
             </p>
           </div>
 

@@ -83,7 +83,7 @@ const AboutWeb = () => {
           <div className="flex-1 text-center md:text-left relative z-10">
             <h3 className="text-3xl font-black tracking-tighter mb-3 leading-tight">Fuel the Engine.</h3>
             <p className="text-rose-100 font-medium text-base mb-6 max-w-xl leading-relaxed">
-              SoftBee PDF is self-funded and ad-free. Your support ensures the project stays alive and free for everyone.
+              SoftBee PDF is a community-driven, 100% free open-source PDF toolkit. Your support ensures the project stays alive and free for everyone.
             </p>
             <div className="flex flex-wrap justify-center md:justify-start gap-3">
               <a href="https://github.com/Softbee-Aashish" target="_blank" className="px-8 py-3.5 bg-white text-rose-600 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-transform shadow-lg flex items-center gap-2">
@@ -173,23 +173,6 @@ const AboutWeb = () => {
           <div className="w-32 h-32 bg-rose-500/10 rounded-3xl flex items-center justify-center shrink-0 border border-rose-500/20">
             <SparklesIcon size={48} className="text-rose-500 animate-pulse" />
           </div>
-        </div>
-      </section>
-
-      {/* 5. Final Footer Links - Condensed */}
-      <section className="max-w-4xl mx-auto px-6 text-center border-t border-gray-100 dark:border-zinc-900 pt-16">
-        <div className="flex flex-wrap justify-center gap-8 mb-12">
-          <a href="https://github.com/Softbee-Aashish/softbee-pdf" target="_blank" className="flex items-center gap-2.5 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-rose-500 transition-colors group">
-            <GHIcon size={16} /> Audit Source <ExternalLinkIcon size={12} className="opacity-40 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-          </a>
-          <button onClick={() => navigate('/thanks')} className="flex items-center gap-2.5 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-rose-500 transition-colors group">
-            <SparklesIcon size={16} /> Credits <ChevronRightIcon size={12} className="opacity-40 group-hover:translate-x-1 transition-transform" />
-          </button>
-        </div>
-
-        <div className="opacity-20 hover:opacity-50 transition-opacity duration-700">
-          <SoftBeeLogo size={32} iconColor="#F59E0B" partColor="currentColor" className="mx-auto mb-4" />
-          <p className="text-[9px] font-black uppercase tracking-[0.6em] text-gray-400">SoftBee</p>
         </div>
       </section>
 

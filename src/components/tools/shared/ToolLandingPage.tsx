@@ -63,37 +63,36 @@ export default function ToolLandingPage({
           onChange={(e) => e.target.files && onFileSelect(e.target.files)}
         />
 
-        {/* Big Signature Dropzone Box */}
+        {/* Pi7-Style Compact Rectangle Dropzone Box */}
         <div
           onClick={() => fileInputRef.current?.click()}
           onDragOver={handleDragOver}
           onDrop={handleDrop}
-          className={`w-full max-w-4xl mx-auto ${config.bannerColor} ${config.bannerTextColor} rounded-[2rem] sm:rounded-[2.5rem] p-9 sm:p-12 text-center cursor-pointer shadow-2xl transition-all duration-300 group flex flex-col items-center justify-center border-4 border-transparent hover:border-white/30 hover:scale-[1.005] relative overflow-hidden`}
+          className="w-full max-w-2xl mx-auto border-2 border-dashed border-gray-300 hover:border-blue-500 dark:border-zinc-700 dark:hover:border-blue-400 rounded-2xl bg-white dark:bg-zinc-900/60 hover:bg-blue-50/30 dark:hover:bg-zinc-900/90 p-7 sm:p-8 text-center cursor-pointer shadow-xs hover:shadow-md transition-all duration-300 group flex flex-col items-center justify-center relative select-none"
         >
-          {/* Subtle background glow */}
-          <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
-
-          {/* Center Graphic / Icon */}
-          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-6 group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-300 shadow-inner">
-            <IconComponent size={40} className="text-white" strokeWidth={2.2} />
-          </div>
-
-          {/* "CHOOSE FILES" White Button */}
-          <div className="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-gray-900 rounded-xl font-bold shadow-lg hover:bg-gray-50 active:scale-95 transition-all text-sm mb-3">
-            <Upload size={17} className="text-gray-900" />
-            <span>CHOOSE FILES</span>
-            <ChevronDown size={14} className="opacity-60 ml-0.5" />
-          </div>
-
-          <p className="text-xs sm:text-sm text-white/80 font-medium">
-            {config.acceptText}
+          {/* Top text prompt */}
+          <p className="text-sm sm:text-base font-semibold text-gray-700 dark:text-zinc-200 mb-3 flex items-center justify-center gap-2">
+            <IconComponent size={18} className="text-gray-600 dark:text-zinc-300 group-hover:text-blue-600 transition-colors" />
+            <span>Select Or Drag &amp; Drop Files Here</span>
           </p>
 
-          {/* 3 Checkmarks */}
-          <div className="mt-10 pt-6 border-t border-white/15 w-full flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-xs text-white/95 font-medium">
+          {/* "CHOOSE FILES" Primary Button (Pi7 style) */}
+          <div className={`inline-flex items-center gap-2 px-8 py-3 ${config.bannerColor} hover:opacity-90 text-white rounded-xl font-bold shadow-md hover:scale-105 active:scale-95 transition-all text-sm mb-3`}>
+            <Upload size={16} className="text-white" />
+            <span>Select PDF Files</span>
+            <ChevronDown size={14} className="opacity-70 ml-0.5" />
+          </div>
+
+          {/* Bottom helper text */}
+          <p className="text-xs text-gray-400 dark:text-zinc-500 font-medium">
+            {config.acceptText} • 100% Client-Side Engine
+          </p>
+
+          {/* 3 Checkmark Guarantees */}
+          <div className="mt-4 pt-3 border-t border-gray-100 dark:border-zinc-800/80 w-full flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-[11px] text-gray-500 dark:text-zinc-400 font-medium">
             {config.checkmarks.map((check, idx) => (
-              <span key={idx} className="flex items-center gap-2">
-                <CheckCircle2 size={16} className="text-white shrink-0" />
+              <span key={idx} className="flex items-center gap-1.5">
+                <CheckCircle2 size={13} className="text-emerald-500 shrink-0" />
                 <span>{check}</span>
               </span>
             ))}
